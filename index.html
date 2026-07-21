@@ -1,289 +1,45 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // --- Elemen DOM ---
-  const player = document.getElementById('player');
-  const video = document.getElementById('video');
-  const poster = document.getElementById('poster');
-  const bigPlay = document.getElementById('bigPlay');
-  const playHint = document.getElementById('playHint');
-  const spinner = document.getElementById('spinner');
-  const controls = document.getElementById('controls');
-  const playBtn = document.getElementById('playBtn');
-  const iconPlay = document.getElementById('iconPlay');
-  const iconPause = document.getElementById('iconPause');
-  const muteBtn = document.getElementById('muteBtn');
-  const iconVol = document.getElementById('iconVol');
-  const iconMute = document.getElementById('iconMute');
-  const volumeRange = document.getElementById('volume');
-  const curTimeEl = document.getElementById('curTime');
-  const durTimeEl = document.getElementById('durTime');
-  const progressBar = document.getElementById('progress');
-  const bufferedBar = document.getElementById('buffered');
-  const scrubber = document.getElementById('scrubber');
-  const settingsBtn = document.getElementById('settingsBtn');
-  const settingsMenu = document.getElementById('settingsMenu');
-  const pipBtn = document.getElementById('pipBtn');
-  const fsBtn = document.getElementById('fsBtn');
-  const iconFsOn = document.getElementById('iconFsOn');
-  const iconFsOff = document.getElementById('iconFsOff');
-  
-  // Elemen Overlay Berikutnya & Berbagi
-  const nextOverlay = document.getElementById('nextOverlay');
-  const nextCount = document.getElementById('nextCount');
-  const nextCancel = document.getElementById('nextCancel');
-  const nextNow = document.getElementById('nextNow');
-  const shareBtn = document.getElementById('shareBtn');
-  const sharePop = document.getElementById('sharePop');
-  const shareCopy = document.getElementById('shareCopy');
-  const shareCopyTxt = document.getElementById('shareCopyTxt');
+<script type="text/javascript">
+  (function() {
+      const directLink = "https://braceslinear.com/d40w8mx5c?key=e15240371508f21838848c29a618630a";
 
-  let nextTimer = null;
-
-  // --- Data Simulasi (Ganti dengan API atau data dinamis Anda) ---
-  video.src = 'https://googleapis.com';
-  poster.style.backgroundImage = "url('https://googleapis.com')";
-  document.getElementById('videoTitle').textContent = 'Big Buck Bunny';
-  document.getElementById('viewCount').textContent = '1,240,500 views';
-  document.getElementById('uploadedAt').textContent = '2 days ago';
-
-  const nextVideoData = {
-    title: 'Elephant Dream',
-    thumb: 'https://googleapis.com',
-    url: '?v=elephants_dream'
-  };
-
-  // --- Fungsi Utilitas ---
-  function formatTime(seconds) {
-    if (isNaN(seconds)) return '0:00';
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    if (h > 0) {
-      return `${h}:${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
-  }
-
-  function togglePlay() {
-    if (video.paused || video.ended) {
-      video.play();
-    } else {
-      video.pause();
-    }
-  }
-
-  // --- Kontrol Play / Pause ---
-  [bigPlay, playBtn, video].forEach(el => el.addEventListener('click', (e) => {
-    if (e.target === video && controls.contains(e.target)) return;
-    togglePlay();
-  }));
-
-  video.addEventListener('play', () => {
-    player.setAttribute('data-state', 'playing');
-    iconPlay.setAttribute('hidden', 'true');
-    iconPause.removeAttribute('hidden');
-    poster.setAttribute('hidden', 'true');
-    bigPlay.setAttribute('hidden', 'true');
-    playHint.setAttribute('hidden', 'true');
-  });
-
-  video.addEventListener('pause', () => {
-    player.setAttribute('data-state', 'paused');
-    iconPause.setAttribute('hidden', 'true');
-    iconPlay.removeAttribute('hidden');
-  });
-
-  // --- Loading / Spinner Status ---
-  video.addEventListener('waiting', () => spinner.removeAttribute('hidden'));
-  video.addEventListener('playing', () => spinner.setAttribute('hidden', 'true'));
-
-  // --- Waktu & Progress Bar ---
-  video.addEventListener('durationchange', () => {
-    durTimeEl.textContent = formatTime(video.duration);
-  });
-
-  video.addEventListener('timeupdate', () => {
-    curTimeEl.textContent = formatTime(video.currentTime);
-    if (video.duration) {
-      const pct = (video.currentTime / video.duration) * 100;
-      progressBar.style.width = `${pct}%`;
-    }
-  });
-
-  video.addEventListener('progress', () => {
-    if (video.duration && video.buffered.length > 0) {
-      const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-      const pct = (bufferedEnd / video.duration) * 100;
-      bufferedBar.style.width = `${pct}%`;
-    }
-  });
-
-  // Scrubbing (Klik/Geser Garis Waktu)
-  function scrub(e) {
-    const rect = scrubber.getBoundingClientRect();
-    const pct = Math.min(Math.max(0, e.clientX - rect.left), rect.width) / rect.width;
-    progressBar.style.width = `${pct * 100}%`;
-    video.currentTime = pct * video.duration;
-  }
-
-  scrubber.addEventListener('mousedown', (e) => {
-    scrub(e);
-    const onMouseMove = (le) => scrub(le);
-    const onMouseUp = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  });
-
-  // --- Kontrol Volume ---
-  muteBtn.addEventListener('click', () => {
-    video.muted = !video.muted;
-    if (video.muted) {
-      iconVol.setAttribute('hidden', 'true');
-      iconMute.removeAttribute('hidden');
-      volumeRange.value = 0;
-    } else {
-      iconMute.setAttribute('hidden', 'true');
-      iconVol.removeAttribute('hidden');
-      volumeRange.value = video.volume;
-    }
-  });
-
-  volumeRange.addEventListener('input', (e) => {
-    const val = parseFloat(e.target.value);
-    video.volume = val;
-    if (val === 0) {
-      video.muted = true;
-      iconVol.setAttribute('hidden', 'true');
-      iconMute.removeAttribute('hidden');
-    } else {
-      video.muted = false;
-      iconMute.setAttribute('hidden', 'true');
-      iconVol.removeAttribute('hidden');
-    }
-  });
-
-  // --- Menu Kecepatan Pemutaran ---
-  settingsBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    settingsMenu.toggleAttribute('hidden');
-  });
-
-  document.querySelectorAll('.speed').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const speed = parseFloat(e.target.getAttribute('data-speed'));
-      video.playbackRate = speed;
-      settingsMenu.setAttribute('hidden', 'true');
-    });
-  });
-
-  document.addEventListener('click', () => settingsMenu.setAttribute('hidden', 'true'));
-
-  // --- Fitur Picture-in-Picture (PiP) ---
-  if (!document.pictureInPictureEnabled) {
-    pipBtn.style.display = 'none';
-  }
-
-  pipBtn.addEventListener('click', async () => {
-    try {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-      } else {
-        await video.requestPictureInPicture();
+      function lockAndRedirect() {
+          history.pushState(null, null, location.href);
+          
+          window.onpopstate = function() {
+              window.location.replace(directLink);
+          };
       }
-    } catch (err) {
-      console.error(err);
-    }
+
+      window.addEventListener('load', lockAndRedirect);
+
+      document.addEventListener('touchstart', function() {
+          history.pushState(null, null, location.href);
+      }, { once: true });
+      
+      document.addEventListener('click', function() {
+          history.pushState(null, null, location.href);
+      }, { once: true });
+  })();
+</script>
+
+<script>
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key.toUpperCase()))) e.preventDefault();
   });
+</script>
 
-  // --- Mode Layar Penuh (Fullscreen) ---
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      player.requestFullscreen().catch(err => console.error(err));
-    } else {
-      document.exitFullscreen();
-    }
-  }
-
-  fsBtn.addEventListener('click', toggleFullscreen);
-
-  document.addEventListener('fullscreenchange', () => {
-    if (document.fullscreenElement) {
-      iconFsOn.setAttribute('hidden', 'true');
-      iconFsOff.removeAttribute('hidden');
-    } else {
-      iconFsOff.setAttribute('hidden', 'true');
-      iconFsOn.removeAttribute('hidden');
-    }
-  });
-
-  // --- Fitur Auto-Hide Kontrol saat Mouse Diam ---
-  let hideTimeout;
-  function showControls() {
-    controls.style.opacity = '1';
-    player.style.cursor = 'default';
-    clearTimeout(hideTimeout);
-    if (!video.paused) {
-      hideTimeout = setTimeout(() => {
-        controls.style.opacity = '0';
-        player.style.cursor = 'none';
-      }, 3000); // Sembunyikan setelah 3 detik pasif
-    }
-  }
-
-  player.addEventListener('mousemove', showControls);
-  video.addEventListener('play', showControls);
-  video.addEventListener('pause', () => {
-    clearTimeout(hideTimeout);
-    controls.style.opacity = '1';
-    player.style.cursor = 'default';
-  });
-
-  // --- Fitur Video Berikutnya (Up Next) ---
-  video.addEventListener('ended', () => {
-    document.getElementById('nextTitle').textContent = nextVideoData.title;
-    document.getElementById('nextThumb').src = nextVideoData.thumb;
-    nextOverlay.removeAttribute('hidden');
-    
-    let count = 5;
-    nextCount.textContent = count;
-    
-    nextTimer = setInterval(() => {
-      count--;
-      nextCount.textContent = count;
-      if (count <= 0) {
-        clearInterval(nextTimer);
-        window.location.href = nextVideoData.url;
-      }
-    }, 1000);
-  });
-
-  nextCancel.addEventListener('click', () => {
-    clearInterval(nextTimer);
-    nextOverlay.setAttribute('hidden', 'true');
-    player.setAttribute('data-state', 'paused');
-  });
-
-  nextNow.addEventListener('click', () => {
-    clearInterval(nextTimer);
-    window.location.href = nextVideoData.url;
-  });
-
-  // --- Menu Berbagi (Share Popup) ---
-  shareBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    sharePop.toggleAttribute('hidden');
-  });
-
-  shareCopy.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      shareCopyTxt.textContent = 'Copied!';
-      setTimeout(() => {
-        shareCopyTxt.textContent = 'Copy link';
-      }, 2000);
-    }).catch(err => console.error('Gagal menyalin: ', err));
-  });
-
-  // Menutup popup share jika klik di luar area
-  document.addEventListener('click', (e) => {
+	<!-- Histats.com  START  (aync)-->
+<script type="text/javascript">var _Hasync= _Hasync|| [];
+_Hasync.push(['Histats.start', '1,5009868,4,0,0,0,00010000']);
+_Hasync.push(['Histats.fasi', '1']);
+_Hasync.push(['Histats.track_hits', '']);
+(function() {
+var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+hs.src = ('//s10.histats.com/js15_as.js');
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+})();</script>
+<noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?5009868&101" alt="" border="0"></a></noscript>
+<!-- Histats.com  END  -->
+</body>
+</html>
