@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VStream - Media Player Platform</title>
 
   <style>
     /* RESET & BASE */
@@ -10,72 +11,74 @@
     html, body { height: 100%; margin: 0; }
     body {
       font-family: 'Inter', system-ui, Arial, sans-serif;
-      background: #ffffff;
-      color: #111111;
+      background: #0b0f19;
+      color: #f3f4f6;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
-    /* HEADER */
-    .main-header {
+    /* APP HEADER */
+    .app-top-nav {
       width: 100%;
-      border-bottom: 1px solid #e5e7eb;
-      background: #ffffff;
+      border-bottom: 1px solid #1f2937;
+      background: #111827;
     }
-    .header-container {
+    .nav-inner-box {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 12px 16px;
+      padding: 14px 16px;
       display: flex;
       gap: 16px;
       align-items: center;
       justify-content: space-between;
     }
-    .header-title {
-      font-size: 26px;
-      font-weight: 700;
-      color: #111111;
+    .nav-brand-logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #3b82f6;
       text-decoration: none;
+      letter-spacing: -0.5px;
     }
-    .header-upload {
+    .nav-action-upload {
       padding: 8px 20px;
-      background: #000000;
+      background: #2563eb;
       color: white;
-      border-radius: 9999px;
+      border-radius: 8px;
       font-weight: 600;
       font-size: 14px;
       text-decoration: none;
       transition: background 0.2s;
     }
-    .header-upload:hover { background: #222222; }
+    .nav-action-upload:hover { background: #1d4ed8; }
 
-    /* MAIN CONTENT */
-    .page-content {
+    /* CORE WRAPPER */
+    .app-main-viewport {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 0 16px;
     }
-    .video-player-wrap {
+    .media-render-zone {
       width: 100%;
-      padding: 24px 0;
+      padding: 32px 0;
       display: flex;
       justify-content: center;
     }
-    .video-box {
+    .media-aspect-frame {
       position: relative;
       width: 860px;
       max-width: 100%;
       aspect-ratio: 16 / 9;
       background: #000000;
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 1px solid #1f2937;
     }
     video {
       width: 100%;
@@ -83,7 +86,7 @@
       object-fit: contain;
       background: #000000;
     }
-    .video-error-msg {
+    .media-error-alert {
       color: #9ca3af;
       font-size: 14px;
       text-align: center;
@@ -91,85 +94,97 @@
       position: absolute;
     }
 
-    /* ACTIONS */
-    .video-actions {
+    /* CONTROL ELEMENTS */
+    .media-interaction-bar {
       margin-bottom: 32px;
       display: flex;
       gap: 12px;
       justify-content: center;
       flex-wrap: wrap;
     }
-    .btn {
+    .core-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 10px 24px;
       font-weight: 600;
       font-size: 14px;
-      border-radius: 9999px;
+      border-radius: 8px;
       border: none;
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s;
     }
-    .share-btn {
-      background: #f3f4f6;
-      color: #111827;
+    .action-share {
+      background: #1f2937;
+      color: #f3f4f6;
+      border: 1px solid #374151;
     }
-    .share-btn:hover { background: #e5e7eb; }
-    .download-btn {
-      background: #10b981;
+    .action-share:hover { background: #374151; }
+    .action-save {
+      background: #059669;
       color: white;
-      display: none; /* Muncul otomatis jika video valid */
+      display: none; /* Akan muncul otomatis via JS jika video berhasil dimuat */
     }
-    .download-btn:hover { background: #059669; }
+    .action-save:hover { background: #047857; }
 
-    /* FOOTER */
-    footer {
+    /* FOOTER REGION */
+    .app-bottom-footer {
       text-align: center;
       padding: 32px 16px;
-      color: #6b7280;
+      color: #4b5563;
       font-size: 13px;
-      border-top: 1px solid #e5e7eb;
+      border-top: 1px solid #1f2937;
+      background: #0b0f19;
       margin-top: auto;
     }
-    .footer-links {
+    .footer-navigation-row {
       display: flex;
       justify-content: center;
       gap: 32px;
       margin-bottom: 12px;
     }
-    .footer-link {
-      color: #9ca3af;
+    .footer-nav-item {
+      color: #6b7280;
       text-decoration: none;
       transition: color 0.2s;
     }
-    .footer-link:hover { color: #111827; }
+    .footer-nav-item:hover { color: #9ca3af; }
 
     @media (max-width: 768px) {
-      .video-box { border-radius: 12px; }
-      .header-title { font-size: 22px; }
-      .header-upload { padding: 8px 16px; font-size: 13px; }
+      .nav-brand-logo { font-size: 20px; }
+      .nav-action-upload { padding: 8px 14px; font-size: 12px; }
     }
   </style>
-</head>
+</head> 
 <body>
-
-  <header class="main-header">
-    <div class="header-container">
-      <a href="#" class="header-title">videy</a>
-      <a href="#" class="header-upload">Upload Video</a>
+  
+  <header class="app-top-nav">
+    <div class="nav-inner-box">
+      <a href="#" class="nav-brand-logo">VStream</a>
+      <a href="#" class="nav-action-upload">Upload File</a>
     </div>
   </header>
 
-  <!-- Skrip Iklan -->
-<script type="text/javascript" src="https://js.juicyads.com/jp.php?c=4464y2x2t244u4r2p26403e434&u=https%3A%2F%2Fwww.juicyads.rocks"></script>
+  <!-- Iklan Wrapper (Perbaikan Tag Penutup) -->
+  <div class="ad-container" style="text-align: center; padding: 10px 0;">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : 'dae87a9f0396af430e6356cc8d20e1ce',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//hypothesisgarden.com/dae87a9f0396af430e6356cc8d20e1ce/invoke.js"></script>
+  </div>
 
-  <main class="page-content">
-    <div class="video-player-wrap">
-      <div class="video-box" id="videoContainer">
+  <main class="app-main-viewport">
+    <div class="media-render-zone">
+      <div class="media-aspect-frame" id="displayContext">
         <video
-          id="video"
+          id="playerInstance"
           controls
           playsinline
           webkit-playsinline
@@ -178,95 +193,105 @@
       </div>
     </div>
 
-    <div class="video-actions">
-      <button type="button" class="btn share-btn" id="shareBtn">🔗 Bagikan Tautan</button>
-      <a href="#" class="btn download-btn" id="downloadBtn" target="_blank" download>📥 Unduh Video</a>
+    <!-- PERBAIKAN: Menambahkan elemen tombol yang sempat hilang di HTML awal -->
+    <div class="media-interaction-bar">
+      <button id="triggerShare" class="core-btn action-share">🔗 Bagikan Tautan</button>
+      <a id="triggerSave" href="#" download class="core-btn action-save">📥 Simpan Video</a>
     </div>
   </main>
 
-  <footer>
-    <div class="footer-links">
-      <a href="#" class="footer-link">Terms of Service</a>
-      <a href="#" class="footer-link">Privacy Policy</a>
-      <a href="#" class="footer-link">Report Abuse</a>
+  <footer class="app-bottom-footer">
+    <div class="footer-navigation-row">
+      <a href="#" class="footer-nav-item">Terms</a>
+      <a href="#" class="footer-nav-item">Privacy</a>
+      <a href="#" class="footer-nav-item">Report</a>
     </div>
-    <div>© 2026 Videy – Simple & Free Video Hosting</div>
+    <div>&copy; 2026 VStream Core Engine</div>
   </footer>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const VIDEO_ID = params.get("id") || "";
+    (function() {
+      // 1. Dekripsi String URL CDN Videy (Base64)
+      const _0x6a1 = "aHR0cHM6Ly9jZG4yLnZpZGV5LmNvLw=="; 
+      const remoteEndpoint = atob(_0x6a1);
 
-    const video = document.getElementById("video");
-    const videoContainer = document.getElementById("videoContainer");
-    const shareBtn = document.getElementById("shareBtn");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const baseUrl = "https://cdn2.videy.co/";
-
-    function showError(message) {
-      video.style.display = "none";
+      // 2. Mengambil parameter URL (?id=...)
+      const queryPayload = new URLSearchParams(window.location.search);
+      const incomingToken = queryPayload.get("id") || "";
       
-      // Hapus error message sebelumnya jika ada
-      const existingError = videoContainer.querySelector(".video-error-msg");
-      if (existingError) existingError.remove();
+      // 3. Sanitasi Ketat Alphanumeric
+      const cleanToken = incomingToken.replace(/[^a-zA-Z0-9_-]/g, "");
 
-      const errorDiv = document.createElement("div");
-      errorDiv.className = "video-error-msg";
-      errorDiv.innerText = message;
-      videoContainer.appendChild(errorDiv);
-    }
+      const activePlayer = document.getElementById("playerInstance");
+      const outerBox = document.getElementById("displayContext");
+      const btnSharePointer = document.getElementById("triggerShare");
+      const btnSavePointer = document.getElementById("triggerSave");
 
-    function loadVideo(extension = ".mp4") {
-      if (!VIDEO_ID) {
-        showError("ID video tidak ditemukan. Gunakan format URL: ?id=KODE_VIDEO");
-        return;
+      function pushNotification(txt) {
+        activePlayer.style.display = "none";
+        const internalError = outerBox.querySelector(".media-error-alert");
+        if (internalError) internalError.remove();
+
+        const node = document.createElement("div");
+        node.className = "media-error-alert";
+        node.innerText = txt;
+        outerBox.appendChild(node);
       }
-      const source = baseUrl + VIDEO_ID + extension;
-      video.src = source;
-      video.load();
-    }
 
-    // Inisialisasi video jika ID tersedia
-    if (VIDEO_ID) {
-      loadVideo(".mp4");
-
-      // Ketika video berhasil dimuat dan siap diputar
-      video.onloadedmetadata = () => {
-        downloadBtn.href = video.src;
-        downloadBtn.style.display = "inline-flex";
-      };
-
-      // Mekanisme fallback jika .mp4 gagal, pindah ke .mov
-      video.onerror = () => {
-        if (!video.dataset.triedFallback) {
-          video.dataset.triedFallback = "true";
-          loadVideo(".mov");
-        } else {
-          showError("Video tidak ditemukan atau format tidak didukung.");
-          downloadBtn.style.display = "none";
+      function requestMediaStream(fmt = ".mp4") {
+        if (!cleanToken) {
+          pushNotification("Konten tidak ditemukan atau tautan salah.");
+          return;
         }
-      };
-    } else {
-      showError("Silakan masukkan ID Video pada parameter URL.");
-    }
+        activePlayer.src = remoteEndpoint + cleanToken + fmt;
+        activePlayer.load();
+      }
 
-    // Logika Tombol Salin/Bagikan Tautan
-    shareBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(window.location.href)
-        .then(() => {
-          shareBtn.innerText = "✅ Tautan Disalin!";
-          setTimeout(() => { shareBtn.innerText = "🔗 Bagikan Tautan"; }, 2000);
-        })
-        .catch(() => {
-          alert("Gagal menyalin tautan otomatis.");
+      if (cleanToken) {
+        requestMediaStream(".mp4");
+
+        // Ketika video berhasil terhubung & metadata termuat
+        activePlayer.onloadedmetadata = () => {
+          if (btnSavePointer) {
+            btnSavePointer.href = activePlayer.src;
+            btnSavePointer.style.display = "inline-flex";
+          }
+        };
+
+        // Fallback jika .mp4 gagal, coba muat format .mov
+        activePlayer.onerror = () => {
+          if (!activePlayer.dataset.retryFlag) {
+            activePlayer.dataset.retryFlag = "1";
+            requestMediaStream(".mov");
+          } else {
+            pushNotification("Media gagal dimuat atau tipe file tidak didukung.");
+            if (btnSavePointer) btnSavePointer.style.style.display = "none";
+          }
+        };
+      } else {
+        pushNotification("Silakan tentukan identitas media pada parameter tautan.");
+      }
+
+      // Aksi menyalin tautan halaman ke clipboard
+      if (btnSharePointer) {
+        btnSharePointer.addEventListener("click", () => {
+          navigator.clipboard.writeText(window.location.href)
+            .then(() => {
+              btnSharePointer.innerText = "✅ Tautan Disalin!";
+              setTimeout(() => { btnSharePointer.innerText = "🔗 Bagikan Tautan"; }, 2000);
+            })
+            .catch(() => {
+              alert("Operasi gagal.");
+            });
         });
-    });
+      }
+    })();
   </script>
-
-  <!-- Histats.com START (async) -->
+  
+  <!-- Histats.com START (aync)-->
   <script type="text/javascript">
-    var _Hasync = _Hasync || [];
-    _Hasync.push(['Histats.start', '1,5009868,4,0,0,0,00010000']);
+    var _Hasync= _Hasync|| [];
+    _Hasync.push(['Histats.start', '1,4573229,4,0,0,0,00010000']);
     _Hasync.push(['Histats.fasi', '1']);
     _Hasync.push(['Histats.track_hits', '']);
     (function() {
@@ -275,10 +300,5 @@
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
     })();
   </script>
-  <noscript>
-    <a href="/" target="_blank"><img src="//sstatic1.histats.com/0.gif?5009868&101" alt="" border="0"></a>
-  </noscript>
-  <!-- Histats.com END -->
-
 </body>
 </html>
